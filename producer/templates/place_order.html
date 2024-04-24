@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .item {
+            margin-bottom: 10px;
+        }
+        #add_item {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #add_item:hover {
+            background-color: #0056b3;
+        }
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Place Order</h1>
+    <form id="order_form" action="/place_order" method="POST">
+        <div id="items_container">
+            <div class="item">
+                <label for="item_id">Item ID:</label>
+                <input type="text" name="item_id[]" class="item_id">
+                <label for="item_quantity">Quantity:</label>
+                <input type="number" name="item_quantity[]" class="item_quantity">
+            </div>
+        </div>
+        <button type="button" id="add_item"><i class="fas fa-plus"></i> Add Item</button>
+        <br>
+        <!-- Hidden input field for order_data -->
+        <input type="hidden" name="order_data" id="order_data">
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $("#add_item").click(function() {
+                $("#items_container").append('<div class="item"><label for="item_id">Item ID:</label><input type="text" name="item_id[]" class="item_id"><label for="item_quantity">Quantity:</label><input type="number" name="item_quantity[]" class="item_quantity"></div>');
+            });
+
+            // Function to construct order_data JSON
+            function constructOrderData() {
+                var orderData = [];
+                $(".item").each(function() {
+                    var itemId = $(this).find(".item_id").val();
+                    var itemQuantity = $(this).find(".item_quantity").val();
+                    orderData.push({ "id": itemId, "quantity": itemQuantity });
+                });
+                return JSON.stringify(orderData);
+            }
+
+            // Submit form event listener
+            $("#order_form").submit(function() {
+                var orderData = constructOrderData();
+                $("#order_data").val(orderData);
+            });
+        });
+    </script>
+</body>
+</html>
